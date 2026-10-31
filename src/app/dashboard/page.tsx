@@ -29,6 +29,14 @@ export default function Dashboard() {
   const [replyText, setReplyText] = useState('')
   const [sending, setSending] = useState(false)
   const [filter, setFilter] = useState<'all' | 'open' | 'pending' | 'resolved'>('all')
+  const [creating, setCreating] = useState(false)
+
+  async function createTestTicket() {
+    setCreating(true)
+    await fetch('/api/tickets/test', { method: 'POST' })
+    setCreating(false)
+    fetchTickets()
+  }
 
   const fetchTickets = useCallback(async () => {
     try {
@@ -98,6 +106,22 @@ export default function Dashboard() {
           {counts.resolved} resolved
         </p>
       </header>
+
+      {/* Simulate GHL Webhook Banner */}
+      <div className="max-w-6xl mx-auto px-4 pt-6">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 flex items-center justify-between">
+          <p className="text-sm text-blue-800">
+            Simulate a GHL webhook — creates a ticket as if a contact messaged in GoHighLevel
+          </p>
+          <button
+            onClick={createTestTicket}
+            disabled={creating}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 whitespace-nowrap"
+          >
+            {creating ? 'Creating...' : '+ Simulate GHL Webhook'}
+          </button>
+        </div>
+      </div>
 
       <div className="max-w-6xl mx-auto px-4 py-6">
         {/* Filter tabs */}
