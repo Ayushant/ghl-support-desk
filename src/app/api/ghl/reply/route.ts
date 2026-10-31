@@ -1,10 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
+import { getSupabaseAdmin } from '@/lib/supabase'
 import { NextRequest, NextResponse } from 'next/server'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,7 +12,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const { data: ticket } = await supabase
+    const { data: ticket } = await getSupabaseAdmin()
       .from('tickets')
       .select('*')
       .eq('id', ticketId)
@@ -46,7 +41,7 @@ export async function POST(req: NextRequest) {
 
     const ghlData = await ghlResponse.json()
 
-    await supabase
+    await getSupabaseAdmin()
       .from('tickets')
       .update({ status: 'pending', updated_at: new Date().toISOString() })
       .eq('id', ticketId)

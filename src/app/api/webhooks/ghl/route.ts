@@ -1,10 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
+import { getSupabaseAdmin } from '@/lib/supabase'
 import { NextRequest, NextResponse } from 'next/server'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,7 +8,7 @@ export async function POST(req: NextRequest) {
     const eventId =
       payload.id || `${payload.contact_id || payload.contactId}_${Date.now()}`
 
-    const { error } = await supabase.from('tickets').upsert(
+    const { error } = await getSupabaseAdmin().from('tickets').upsert(
       {
         event_id: eventId,
         ghl_contact_id: payload.contact_id || payload.contactId || '',

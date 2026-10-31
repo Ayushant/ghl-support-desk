@@ -1,10 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
+import { getSupabaseAdmin } from '@/lib/supabase'
 import { NextRequest, NextResponse } from 'next/server'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 export async function POST(req: NextRequest) {
   try {
@@ -32,7 +27,7 @@ export async function POST(req: NextRequest) {
       payload.learnerId ||
       ''
 
-    const { error } = await supabase.from('scorm_progress').upsert(
+    const { error } = await getSupabaseAdmin().from('scorm_progress').upsert(
       {
         event_id: eventId,
         ghl_contact_id: ghlContactId,
@@ -79,7 +74,7 @@ export async function POST(req: NextRequest) {
           }
         )
 
-        await supabase
+        await getSupabaseAdmin()
           .from('scorm_progress')
           .update({ synced_to_ghl: true })
           .eq('event_id', eventId)
